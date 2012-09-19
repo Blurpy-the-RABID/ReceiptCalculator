@@ -27,7 +27,7 @@ namespace ReceiptCalculator {
 
             // Now that we have all of the receipts in this List instance, we'll calculate all of the Totals.
             foreach (Receipt receipt in receiptList) {
-                listCommunalTotal = receipt.giveCommunalTotal();
+                listCommunalTotal = receipt.returnCommunalTotal();
                 aListTotal += receipt.returnATotal();
                 vListTotal += receipt.returnVTotal();
                 mListTotal += receipt.returnMTotal();
@@ -45,7 +45,7 @@ namespace ReceiptCalculator {
 
             // Now that we have all of the receipts in this List instance, we'll calculate all of the Totals.
             foreach (Receipt receipt in receiptList) {
-                listCommunalTotal = receipt.giveCommunalTotal();
+                listCommunalTotal = receipt.returnCommunalTotal();
                 aListTotal += receipt.returnATotal();
                 vListTotal += receipt.returnVTotal();
                 mListTotal += receipt.returnMTotal();
@@ -78,6 +78,20 @@ namespace ReceiptCalculator {
 
         public bool returnIsListComplete() {
             return isListComplete;
+        }
+
+        public void showAllReceipts() {
+            Console.WriteLine("\nThe following are the receipts contained within the {0} List:", listOwner);
+            Console.WriteLine("==============================================================");
+            
+            foreach (Receipt receipt in receiptList) {
+                Console.WriteLine("\nReceipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber());
+                Console.WriteLine("--------------");
+                Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
+                Console.WriteLine("Additional Amount Owed By Andy = {0}", receipt.returnATotal());
+                Console.WriteLine("Additional Amount Owed By Vince = {0}", receipt.returnVTotal());
+                Console.WriteLine("Additional Amount Owed By Mike = {0}", receipt.returnMTotal());                
+            }
         }
     }
 }

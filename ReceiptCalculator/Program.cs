@@ -7,92 +7,11 @@ using System.Text;
 namespace ReceiptCalculator {
     class Program {
         static void Main(string[] args) {
-            /*
-            Steps in calculating the receipt totals:
-             1.)  Enter in all receipts for each person who has posted & initialed a receipt on the markerboard (referred to as the receipt's "owner").  All receipts with the same
-                    initial on them are to be compiled into a Receipt List with the "Owner" being the person whose initial is on each receipt.
-                    #=- NOTE:  Electric bills (which are paid for by Mike) are to be entered in as Receipts for the purposes of calculating what is owed to Mike.
-             2.)  Calculate the amount that each individual owes to each Receipt List's Owner based on the communal totals.  This is done by adding all of a Receipt List's communal
-                    totals together, and then dividing said total by 3.
-             3.)  Calculate the amount that each individual owes to each Receipt List's Owner based on individual item totals.  This is done by checking the Receipt List for any
-                    individual item totals that are owed to the Receipt List Owner by a specific individual, and then adding all of these totals together.  The result should be an
-                    entry that specifies which individual owes the Receipt List Owner this additional amount.
-             4.)  Once each Receipt List's totals have been calculated, the program will then determine which individual owes the Receipt List Owner money.  Each individual owes the
-                    Receipt List Owner a Communal Total, as well as any Individual Item Total that the Receipt List may have recorded for that individual to pay.  These two totals
-                    are added together and specified in an entry that reads something like, "Andy owes Vince $500 TOTAL ($300 Communal + ($200 Individual Items)".
-             5.)  The program will then compare the total amounts owed and simplify them by calculating the difference between the amounts owed between each person.
-                    #=- For example, if Vince is owed $500 for groceries by Mike, but Vince also owes Mike $200 for electric bills, the program will subtract $200 from the $500 that
-                        Mike owes Vince, resulting in Mike owing Vince only $300.
-             6.)  Now that the amounts owed have been simplified, the Receipt Lists and the FINAL total amounts owed to each person will be displayed in this fashion:
-                    Vince's Receipt List:
-                    =====================
-                    Receipt V1:
-                    -----------
-                    Communal Total = $XX.XX
-             
-                    Receipt V2:
-                    -----------
-                    Communal Total = $XX.XX
-                    Additional Amount Owed By Andy = $XX.XX
-             
-                    Receipt V3:
-                    -----------
-                    Communal Total = $XX.XX
-                    ...
-                 
-                    Andy's Receipt List:
-                    ====================
-                    Receipt A1:
-                    -----------
-                    Communal Total = $XX.XX
-             
-                    Receipt A2:
-                    -----------
-                    Communal Total = $XX.XX
-                    Additional Amount Owed By Mike = $XX.XX
-             
-                    Receipt A3:
-                    -----------
-                    Communal Total = $XX.XX
-                    ...
-             
-                    Mike's Receipt List:
-                    ====================
-                    Receipt M1:
-                    -----------
-                    Communal Total = $XX.XX
-             
-                    Receipt M2:
-                    -----------
-                    Communal Total = $XX.XX
-                    Additional Amount Owed By Mike = $XX.XX
-             
-                    Receipt M3:
-                    -----------
-                    Communal Total = $XX.XX
-                    ...
-             
-                    Vince owes...
-                    =============
-                    - Andy:  $XXX.XX
-                    - Mike:  $XXX.XX
-             
-                    Andy owes...
-                    =============
-                    - Vince:  $XXX.XX
-                    - Mike:  $XXX.XX
-             
-                    Mike owes...
-                    =============
-                    - Andy:  $XXX.XX
-                    - Vince:  $XXX.XX
-            */
-
-            List aList = new List();
-            List vList = new List();
-            List mList = new List();
+            List aList = new List(); // This will store all of Andy's receipts.
+            List vList = new List(); // This will store all of Vince's receipts.
+            List mList = new List(); // This will store all of Mike's receipts.
             string addAnotherReceipt = "Y"; // This will control the for loop that adds additional receipts to this Receipt List.
-            string moveOn = "Y"; // This will control whether or not the user wishes to re-enter a receipt.
+            // string moveOn = "Y"; // This will control whether or not the user wishes to re-enter a receipt.
             string receiptOwner = "X";
             ArrayList aReceiptList = new ArrayList(); // This ArrayList will hold Andy's receipts.
             ArrayList vReceiptList = new ArrayList(); // This ArrayList will hold Vince's receipts.
@@ -185,7 +104,7 @@ namespace ReceiptCalculator {
                     }
                     // Now we display all of the data entered for the current receipt.
                     Console.WriteLine("\nReceipt {0}{1}:", receiptOwner, i);
-                    Console.WriteLine("Communal Total = {0}", receipt.giveCommunalTotal());
+                    Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
                     if (receiptOwner == "A") {
                         Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
                         Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.returnMTotal());
@@ -198,9 +117,8 @@ namespace ReceiptCalculator {
                         Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
                         Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
                     }
-
-                    Console.Write("Is this information for Receipt {0}{1} correct? (y/n): ", receiptOwner, i);
-                    moveOn = Console.ReadLine().ToUpper();
+                    // Console.Write("Is this information for Receipt {0}{1} correct? (y/n): ", receiptOwner, i);
+                    // moveOn = Console.ReadLine().ToUpper();
 
                     // Now that the user is satisfied with this receipt's information, we'll add this receipt to the current Receipt Owner's List.
                     switch (receiptOwner) {
@@ -229,7 +147,7 @@ namespace ReceiptCalculator {
                 switch (receiptOwner) {
                     case "A":
                         foreach (Receipt receipt in aReceiptList) {
-                            listCommunalTotal = receipt.giveCommunalTotal();
+                            listCommunalTotal = receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();
@@ -237,7 +155,7 @@ namespace ReceiptCalculator {
                         break;
                     case "V":
                         foreach (Receipt receipt in vReceiptList) {
-                            listCommunalTotal = receipt.giveCommunalTotal();
+                            listCommunalTotal = receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();
@@ -245,7 +163,7 @@ namespace ReceiptCalculator {
                         break;
                     case "M":
                         foreach (Receipt receipt in mReceiptList) {
-                            listCommunalTotal = receipt.giveCommunalTotal();
+                            listCommunalTotal = receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();
@@ -280,7 +198,133 @@ namespace ReceiptCalculator {
                         break;
                 }
             }
-            // Insert code here for Steps 4-6.
+            // Now that we've completed all three Receipt Lists, we'll give the user the opportunity to review them before moving on.
+            Console.Write("All (3) Receipt Lists are completed.  Would you like to review them now before moving on? (y/n): ");
+            string reviewReceipts = Console.ReadLine().ToUpper();
+            if (reviewReceipts == "Y") {
+                bool reviewAgain = true;
+                while (reviewAgain == true) {
+                    Console.Write("\nPlease specify whose Receipt List you wish to review (A/V/M): ");
+                    string receiptListToReview = Console.ReadLine().ToUpper();
+
+                    switch (receiptListToReview) {
+                        case "A":
+                            aList.showAllReceipts();
+                            Console.Write("Would you like to review another list? (y/n): ");
+                            reviewReceipts = Console.ReadLine().ToUpper();
+                            if (reviewReceipts == "Y") {
+                                reviewAgain = true;
+                            }
+                            else {
+                                reviewAgain = false;
+                            }
+                            break;
+                        case "V":
+                            vList.showAllReceipts();
+                            Console.Write("Would you like to review another list? (y/n): ");
+                            reviewReceipts = Console.ReadLine().ToUpper();
+                            if (reviewReceipts == "Y") {
+                                reviewAgain = true;
+                            }
+                            else {
+                                reviewAgain = false;
+                            }
+                            break;
+                        case "M":
+                            mList.showAllReceipts();
+                            Console.Write("Would you like to review another list? (y/n): ");
+                            reviewReceipts = Console.ReadLine().ToUpper();
+                            if (reviewReceipts == "Y") {
+                                reviewAgain = true;
+                            }
+                            else {
+                                reviewAgain = false;
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Error:  Invalid user input.  Moving on...");
+                            break;
+                    }
+                }
+            }
+
+            // STEP 4.)  Now that we're done reviewing receipts, it's time to start comparing the totals.
+            Console.WriteLine("\n\nCalculating the totals owed to & by each person...");
+            double aCommunalTotalPerPerson = aList.returnCommunalTotal() / 3;
+            double vCommunalTotalPerPerson = vList.returnCommunalTotal() / 3;
+            double mCommunalTotalPerPerson = mList.returnCommunalTotal() / 3;
+            // Here are the amounts owed to Andy by Vince and Mike.
+            double amountVOwesA = aList.returnVListTotal() + aCommunalTotalPerPerson;
+            double amountMOwesA = aList.returnMListTotal() + aCommunalTotalPerPerson;
+            // Here are the amounts owed to Vince by Andy and Mike.
+            double amountAOwesV = vList.returnAListTotal() + vCommunalTotalPerPerson;
+            double amountMOwesV = vList.returnMListTotal() + vCommunalTotalPerPerson;
+            // Here are the amounts owed to Mike by Andy and Vince.
+            double amountAOwesM = mList.returnAListTotal() + mCommunalTotalPerPerson;
+            double amountVOwesM = mList.returnVListTotal() + mCommunalTotalPerPerson;
+
+            // STEP 5.)  Now to compare each person's dues to the other person's dues.
+            // First, we'll compare Andy's owed totals to the amounts he owes to Vince...
+            Console.WriteLine("\nComparing amounts owed to amounts due for each person...");
+            if (amountVOwesA >= amountAOwesV) {
+                amountVOwesA -= amountAOwesV;
+                amountAOwesV = 0;
+            }
+            else if (amountVOwesA < amountAOwesV) {
+                amountAOwesV -= amountVOwesA;
+                amountVOwesA = 0;
+            }
+            else {
+                Console.WriteLine("ERROR:  Invalid input for amounts that Andy owes Vince & vice versa.");
+            }
+
+            // Now we'll compare Andy's owed totals to the amount he owes to Mike...
+            if (amountMOwesA >= amountAOwesM) {
+                amountMOwesA -= amountAOwesM;
+                amountAOwesM = 0;
+            }
+            else if (amountMOwesA < amountAOwesM) {
+                amountAOwesM -= amountMOwesA;
+                amountMOwesA = 0;
+            }
+            else {
+                Console.WriteLine("ERROR:  Invalid input for amounts that Andy owes Mike & vice versa.");
+            }
+
+            // Next, we'll compare Vince's owed totals.  Since we've already cleared Vince's dues with Andy,
+            // we'll just move on to comparing Vince's owed totals to the amount he owes to Mike...
+            if (amountMOwesV >= amountVOwesM) {
+                amountMOwesV -= amountVOwesM;
+                amountVOwesM = 0;
+            }
+            else if (amountMOwesV < amountVOwesM) {
+                amountVOwesM -= amountMOwesV;
+                amountMOwesV = 0;
+            }
+            else {
+                Console.WriteLine("ERROR:  Invalid input for amounts that Vince owes Mike & vice versa.");
+            }
+
+            // In doing the above calculations, we've simultaneously cleared Mike's dues with Andy & Vince.
+            // Now we can finally post the final results.
+            Console.WriteLine("\nCalculations Complete!!!");
+            Console.WriteLine("Below are the totals owed by each person to each person.");
+            Console.WriteLine("\n\nAmounts Owed To Andy:");
+            Console.WriteLine("========================");
+            Console.WriteLine("- Vince Owes Andy:  ${0}", amountVOwesA);
+            Console.WriteLine("- Mike Owes Andy:  ${0}", amountMOwesA);
+
+            Console.WriteLine("\n\nAmounts Owed To Vince:");
+            Console.WriteLine("========================");
+            Console.WriteLine("- Andy Owes Vince:  ${0}", amountAOwesV);
+            Console.WriteLine("- Mike Owes Vince:  ${0}", amountMOwesV);
+
+            Console.WriteLine("\n\nAmounts Owed To Mike:");
+            Console.WriteLine("========================");
+            Console.WriteLine("- Andy Owes Mike:  ${0}", amountAOwesM);
+            Console.WriteLine("- Vince Owes Mike:  ${0}", amountVOwesM);
+
+            // Insert code here for writing data to a file!
         }
     }
 }
