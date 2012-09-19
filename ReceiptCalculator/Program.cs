@@ -88,32 +88,62 @@ namespace ReceiptCalculator {
                     - Vince:  $XXX.XX
             */
 
+            List aList = new List();
+            List vList = new List();
+            List mList = new List();
+            string addAnotherReceipt = "Y"; // This will control the for loop that adds additional receipts to this Receipt List.
+            string moveOn = "Y"; // This will control whether or not the user wishes to re-enter a receipt.
+            string receiptOwner = "X";
+            ArrayList aReceiptList = new ArrayList(); // This ArrayList will hold Andy's receipts.
+            ArrayList vReceiptList = new ArrayList(); // This ArrayList will hold Vince's receipts.
+            ArrayList mReceiptList = new ArrayList(); // This ArrayList will hold Mike's receipts.
+
             Console.WriteLine("Welcome to the Receipt Calculator Program, written by Vincent Fantini.");
             Console.WriteLine("This calculator assumes that there are only (3) people who've submitted receipts:  Vince; Mike; and Andy.");
             Console.WriteLine("All receipts are to be sorted by the initial written on the top of each receipt.  The initial on each receipt corresponds to the person who paid for the items on the receipt.");
             Console.WriteLine("This program will assume that you have sorted all of the receipts into groups based on the initial written on the top of each receipt prior to using this program.");
             Console.WriteLine("If you haven't done this yet, then please do this now before proceeding.");
-            
-            Console.Write("\nWho's receipts will you be entering first?  Enter the person's first initial ([A]ndy, [V]ince, [M]ike): ");
-            string receiptOwner = Console.ReadLine().ToUpper();
-/*
-            while (receiptOwner != "A" || receiptOwner != "V" || receiptOwner != "M") {
-                Console.Write("Incorrect input.  Please enter the person's first initial ([A]ndy, [V]ince, [M]ike): ");
+
+            while (aList.returnIsListComplete() == false || vList.returnIsListComplete() == false || mList.returnIsListComplete() == false) {
+                Console.Write("\nWhose receipts will you be entering?  Enter the person's first initial ([A]ndy, [V]ince, [M]ike): ");
                 receiptOwner = Console.ReadLine().ToUpper();
-            }
+
+                while (receiptOwner == "A") {
+                    if (aList.returnIsListComplete() == true) {
+                        Console.Write("You've already entered all of Andrew's receipts.  Please enter either 'V' for Vince, or 'M' for Mike: ");
+                        receiptOwner = Console.ReadLine().ToUpper();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                    
+                while (receiptOwner == "V") {
+                    if (vList.returnIsListComplete() == true) {
+                        Console.Write("You've already entered all of Vince's receipts.  Please enter either 'A' for Andy, or 'M' for Mike: ");
+                        receiptOwner = Console.ReadLine().ToUpper();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                while (receiptOwner == "M") {
+                    if (mList.returnIsListComplete() == true) {
+                        Console.Write("You've already entered all of Mike's receipts.  Please enter either 'A' for Andy, or 'V' for Vince: ");
+                        receiptOwner = Console.ReadLine().ToUpper();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                         
+/*
+                        Console.Write("Error: Unacceptable user input.  Please enter 'A' for Andy, 'V' for Vince, or 'M' for Mike: ");
+                        receiptOwner = Console.ReadLine().ToUpper();
+                        break;
+                }
 */
-           
-            string addAnotherReceipt = "Y"; // This will control the for loop that adds additional receipts to this Receipt List.
-            string moveOn = "Y"; // This will control whether or not the user wishes to re-enter a receipt.
-            ArrayList aReceiptList = new ArrayList(); // This ArrayList will hold Andy's receipts.
-            ArrayList vReceiptList = new ArrayList(); // This ArrayList will hold Vince's receipts.
-            ArrayList mReceiptList = new ArrayList(); // This ArrayList will hold Mike's receipts.
-            bool aListComplete = false;
-            bool vListComplete = false;
-            bool mListComplete = false;
-
-            while (aListComplete == false || vListComplete == false || mListComplete == false) {
-
+                addAnotherReceipt = "Y";
                 // As long as the user answers "Y" to the last question in this for loop (i.e. to add another receipt to this List), this loop will create a new receipt and push it onto
                 // the current Owner's List.
                 for (int i = 1; addAnotherReceipt == "Y"; i++) {
@@ -157,16 +187,16 @@ namespace ReceiptCalculator {
                     Console.WriteLine("\nReceipt {0}{1}:", receiptOwner, i);
                     Console.WriteLine("Communal Total = {0}", receipt.giveCommunalTotal());
                     if (receiptOwner == "A") {
-                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.giveVTotal());
-                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.giveMTotal());
+                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
+                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.returnMTotal());
                     }
                     else if (receiptOwner == "V") {
-                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.giveATotal());
-                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.giveMTotal());
+                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
+                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.returnMTotal());
                     }
                     else if (receiptOwner == "M") {
-                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.giveATotal());
-                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.giveVTotal());
+                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
+                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
                     }
 
                     Console.Write("Is this information for Receipt {0}{1} correct? (y/n): ", receiptOwner, i);
@@ -189,40 +219,68 @@ namespace ReceiptCalculator {
                     Console.Write("Do you wish to add another Receipt to the {0} Receipt List? (y/n): ", receiptOwner);
                     addAnotherReceipt = Console.ReadLine().ToUpper();
                 }
+
+                // So now we're done entering receipts for the current Owner's List.  Let's display the results of all of the totals on this List...
+                double listCommunalTotal = 0;
+                double aListTotal = 0;
+                double vListTotal = 0;
+                double mListTotal = 0;
+
+                switch (receiptOwner) {
+                    case "A":
+                        foreach (Receipt receipt in aReceiptList) {
+                            listCommunalTotal = receipt.giveCommunalTotal();
+                            aListTotal += receipt.returnATotal();
+                            vListTotal += receipt.returnVTotal();
+                            mListTotal += receipt.returnMTotal();
+                        }
+                        break;
+                    case "V":
+                        foreach (Receipt receipt in vReceiptList) {
+                            listCommunalTotal = receipt.giveCommunalTotal();
+                            aListTotal += receipt.returnATotal();
+                            vListTotal += receipt.returnVTotal();
+                            mListTotal += receipt.returnMTotal();
+                        }
+                        break;
+                    case "M":
+                        foreach (Receipt receipt in mReceiptList) {
+                            listCommunalTotal = receipt.giveCommunalTotal();
+                            aListTotal += receipt.returnATotal();
+                            vListTotal += receipt.returnVTotal();
+                            mListTotal += receipt.returnMTotal();
+                        }
+                        break;
+                }
+                
+
+                Console.WriteLine("\nTotals For {0} Receipt List:", receiptOwner);
+                Console.WriteLine("Communal Total For {0} Receipt List = {1}", receiptOwner, listCommunalTotal);
+                Console.WriteLine("Amount Owed Per Person For Communal Total = {0}", listCommunalTotal / 3);
+                Console.WriteLine("Additional Amount Owed By Andy To {0} = {1}", receiptOwner, aListTotal);
+                Console.WriteLine("Additional Amount Owed By Vince To {0} = {1}", receiptOwner, vListTotal);
+                Console.WriteLine("Additional Amount Owed By Mike To {0} = {1}", receiptOwner, mListTotal);
+
+                // The last thing we do is set the corresponding ListComplete boolean variable to true.  Once all three are set to "true," then we move onto the next phase of calculations. 
+                switch (receiptOwner) {
+                    case "A":
+                        aList.setIsListComplete(true);
+                        aList.getListOwner(receiptOwner);
+                        aList.getReceiptList(aReceiptList);
+                        break;
+                    case "V":
+                        vList.setIsListComplete(true);
+                        vList.getListOwner(receiptOwner);
+                        vList.getReceiptList(vReceiptList);
+                        break;
+                    case "M":
+                        mList.setIsListComplete(true);
+                        mList.getListOwner(receiptOwner);
+                        mList.getReceiptList(mReceiptList);
+                        break;
+                }
             }
-
-            // So now we're done entering receipts for the current Owner's List.  Let's display the results of all of the totals on this List...
-            double listCommunalTotal = 0;
-            double aListTotal = 0;
-            double vListTotal = 0;
-            double mListTotal = 0;
-
-            foreach (Receipt receipt in aReceiptList) {
-                listCommunalTotal = receipt.giveCommunalTotal();
-                aListTotal += receipt.giveATotal();
-                vListTotal += receipt.giveVTotal();
-                mListTotal += receipt.giveMTotal();
-            }
-
-            Console.WriteLine("\nTotals For {0} Receipt List:", receiptOwner);
-            Console.WriteLine("Communal Total For {0} Receipt List = {1}", receiptOwner, listCommunalTotal);
-            Console.WriteLine("Amount Owed Per Person For Communal Total = {0}", listCommunalTotal / 3);
-            Console.WriteLine("Additional Amount Owed By Andy To {0} = {1}", receiptOwner, aListTotal);
-            Console.WriteLine("Additional Amount Owed By Vince To {0} = {1}", receiptOwner, vListTotal);
-            Console.WriteLine("Additional Amount Owed By Mike To {0} = {1}", receiptOwner, mListTotal);
-
-            // The last thing we do is set the corresponding ListComplete boolean variable to true.  Once all three are set to "true," then we move onto the next phase of calculations. 
-            switch (receiptOwner) {
-                case "A":
-                    aListComplete = true;
-                    break;
-                case "V":
-                    vListComplete = true;
-                    break;
-                case "M":
-                    mListComplete = true;
-                    break;
-            }
+            // Insert code here for Steps 4-6.
         }
     }
 }

@@ -61,15 +61,15 @@ namespace ReceiptCalculator {
             }
         }
 
-        public double giveVTotal() {
+        public double returnVTotal() {
             return vTotal;
         }
 
-        public double giveATotal() {
+        public double returnATotal() {
             return aTotal;
         }
 
-        public double giveMTotal() {
+        public double returnMTotal() {
             return mTotal;
         }
     }
