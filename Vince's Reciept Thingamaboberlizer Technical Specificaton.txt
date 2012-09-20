@@ -1,0 +1,217 @@
+Vince's Receipt Thingamaboberlizer
+============================================================
+
+September 2012
+Revision 1	-	Written By:		Nicola DiPasquale
+				Based on initial e-mail from Vincent Fantini
+
+Copyright (c) 2012
+All rights reserved.
+
+1.	Introduction:
+------------------------------------------------------------
+Vince needs help with calculating the total due for himself and his roommates.  In order to
+facilitate this Vince has requested an application that will take as input a series of
+itemized receipts for each person living in the apartment.  To this end Vince has provided
+and this document will outline the process used in order to calculate the total due for
+each person living in the apartment.
+
+2.	Input Definition:
+------------------------------------------------------------
+All input to the application is in the form of receipts.  Each receipt is owned by one
+person who lives in the apartment.  The owner of the receipt is the person who purchased
+the items listed by that receipt.  Additionally, each receipt contains a list of itemized
+elements that indicate the items that were purchased.  Purchased items can be either
+communal or for a specific person.  The cost of communal items is evenly divided between
+all people living in the apartment.  Costs of items for specific individuals should be
+accredited against those individuals and not against anyone else in the apartment.  All
+item costs are assumed to include the appropriate tax amount for that item when entered by
+the user.
+
+3.	Output Definition:
+------------------------------------------------------------
+The application should store its output in a file.  The filename is specified with the
+following automatic format:
+
+	receipts-yyyy-mm-dd.txt
+
+The output should be stored in the current users Documents folder under the sub-folder
+Receipts.  If the Receipts folder does not exist the program is to create the folder.
+The file should contain a receipt list for each person.  The output file should consist
+of several lists of information, including a receipt list for each person as well as a 
+summation list for each person.
+
+3.1.	Receipt List
+--------------------------------------------------
+The receipt list should look as follows:
+
+	Vince's Receipt List
+	==============================
+	Receipt 1:
+	--------------------
+	Communal Total	:= $104.05
+	
+	Receipt 2:
+	--------------------
+	Communal Total	:= $35.25
+	Andy's Total	:= $10.60
+	
+	Receipt 3:
+	--------------------
+	Communal Total	:= $21.00
+	Andy's Total	:= $5.30
+	Rizzo's Total	:= $7.42
+	
+The owner of the receipts should be printed out at the top of the receipt list followed
+by the words `'s Receipt List`.  The bar under receipt list should consist of 30 `=`
+characters.  Following the header for each persons receipt list, each receipt for that
+person should be listed.  The receipts should be have a sub-header with the word `Receipt`
+followed by the numerical value when that receipt was entered into the list and a colon.
+The bar under the receipt sub-header should consist of 20 `-` characters.  Following the
+receipt sub-header each receipt should display entries for minimally communal purchases.
+If a receipt has purchases for a specific person then those entries should be listed
+under the communal total with the specific persons name followed by `'s Total` and the
+total of all purchases on that receipt for that person.  If a person does not have
+specific entries on any given receipt then the entry for that person should be omitted
+from the output file.  Output should be printed in columns where all numbers for receipts
+line up.  Numbers representing monetary values in the output file must be formatted in
+the standard U.S. monetary format of `$d,ddd.dd`, including the two relevant decimal
+places and leading digits as required.
+
+3.2.	Summation List
+--------------------------------------------------
+Following the receipt list for each person the file should contain summation entries that
+display an entry for each person showing totals for how much that person owes the other.
+These entries should be in the following format:
+	
+	Vince Owes:
+	====================
+	Andy:		$1,000,000.00
+	Rizzo:		$2.00
+	
+The header for the summation list for each person should contain that person's name
+followed by the text ' Owes:'.  The bar under the heading should consist of 20 `=`
+characters.  Following the header should be a list of each other person in the
+apartment and the total that the person in the title owes that person.  If the total
+owed is zero then this list should display that fact.
+
+4.	Calculation of Credits and Debits:
+------------------------------------------------------------
+Once all receipts have been entered into the application then the application should
+calculate the totals owed to each person.  The following algorithm should be used in
+order to perform these calculations:
+
+	for each receipt owned by current person
+		for each item in receipt
+			if item is communal
+				debit each other person total amount divided by n
+					(n is defined as the number of people in the apartment)
+			else if item is individual
+				debit the individual the total amount of the item
+
+	for each person in the apartment (person 1)
+		for each other person in the apartment (person 2)
+			credit person 1 the amount owed to them by person 2
+	
+The application should have the total debits and credits for each person in the apartment.
+A person can only credited with what they have purchased and only debited for what they owe
+to other individuals in the apartment, both for communal and individual items.
+
+4.	Sample Calculation:
+------------------------------------------------------------
+It should be noted that if person 1 owes person 2 then person 2 cannot owe person 1 after
+credits have been received.  Thus output for each person in the apartment including each
+other person is redundant.  For example, if you have a series of receipts as follows:
+
+	Vince Receipt 1:
+	Chicken				$20		C
+	Rice				$10		C
+	Pasta				$15		C
+	Tomato				$5		C
+	Corn				$7		C
+	Peas				$3		C
+	-----------------------------
+	Sub-Total			$60		C
+	
+	Vince Receipt 2:
+	Bacon				$12		C
+	Eggs				$3		C
+	Bubblegum			$1		A
+	Candy				$2		R
+	-----------------------------
+	Sub-Total			$15		C
+						$1		A
+						$2		R
+	
+	Andy Receipt 1:
+	Water Utility:		$102	C
+	
+	Andy Receipt 2:
+	Bubblegum			$1		A
+	Hygiene Products	$4		V
+	-----------------------------
+	Sub-Total			$4		V
+	
+	Rizzo Receipt 1:
+	Electric Utility:	$150	C
+	
+Thus follows if we organize the information into a series of credits and debits for each
+person we can see that Vince spent $75 communally for which he is responsible for 1/3 of
+that amount and both Andy and Rizzo are responsible for the other 2/3 respectively.  The
+1/3 amount that Vince spent goes against Andy and Rizzo as a debit.  Conversely the 1/3
+amount that Vince spend goes against Vince as a credit for those individual people on the
+amount he owes them.  We need only calculate the total amount Vince spent for each person
+and debit that person the specified amount.  Thus bringing the totals for Vince's spending
+to:
+
+	Debits/Credits for Vince:
+	-------------------------
+	Vince:		-$25
+	Andy:		$26
+	Rizzo:		$27
+
+The debit for Vince in this case can be ignored since Vince spent his own money on either
+personal items or communal items for which he will owe the others.  Following this if we
+calculate the total debits for Andy we have the following:
+
+	Debits/Credits for Andy:
+	-------------------------
+	Vince:		$12			<-	-$26 + $38
+	Rizzo:		$34
+	
+	Debits/Credits for Vince:
+	-------------------------
+	Andy:		-$12		<-	$26 + -$38
+	Rizzo:		$27
+
+Following this we need only determine the total debits for Rizzo (the last person in the
+apartment for which we have not calculated debits).  This brings our output to the
+following:
+
+	Debits/Credits for Rizzo:
+	-------------------------
+	Vince:		$23			<-	-$27 + $50
+	Andy:		$16			<-	-$34 + $50
+	
+	Debits/Credits for Andy:
+	-------------------------
+	Vince:		$38
+	Rizzo:		-$16		<-	$34 + -$50
+	
+	Debits/Credits for Vince:
+	-------------------------
+	Andy:		-$12
+	Rizzo:		-$23		<-	$27 + -$50
+
+It should be noted that the credit/debit calculations for any given person 1 and person 2
+are the same as the calculations for person 2 and person 1, excepting in the value has the
+opposite sign.  Thus output for the application should note the following conclusions from
+the provided information:
+
+	Vince owes Andy		$12
+	Vince owes Rizzo	$23
+	Andy owes Rizzo		$16
+
+All other information from the tables above are redundant and need not be included in a
+final clean version of output.  For completeness the information should be stored in the
+file as defined in section 3.

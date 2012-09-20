@@ -324,7 +324,44 @@ namespace ReceiptCalculator {
             Console.WriteLine("- Andy Owes Mike:  ${0}", amountAOwesM);
             Console.WriteLine("- Vince Owes Mike:  ${0}", amountVOwesM);
 
-            // Insert code here for writing data to a file!
+            // Now that we're all done, let's write everything we've done to a .TXT file.
+            Console.WriteLine("\n\nCreating output for 'ReceiptTotals.txt'...");
+            List<string> finalOutputList = new List<string>();
+            finalOutputList.AddRange(aList.writeAllReceiptsToFile());
+            finalOutputList.AddRange(vList.writeAllReceiptsToFile());
+            finalOutputList.AddRange(mList.writeAllReceiptsToFile());
+            finalOutputList.Add(Environment.NewLine);
+            finalOutputList.Add("Calculations Complete!!!");
+            finalOutputList.Add("Below are the totals owed by each person to each person.");
+            finalOutputList.Add(Environment.NewLine);
+            finalOutputList.Add("Amounts Owed To Andy:");
+            finalOutputList.Add("========================");
+            finalOutputList.Add(String.Format("- Vince Owes Andy:  ${0}", amountVOwesA));
+            finalOutputList.Add(String.Format("- Mike Owes Andy:  ${0}", amountMOwesA));
+
+            finalOutputList.Add(Environment.NewLine);
+            finalOutputList.Add("Amounts Owed To Vince:");
+            finalOutputList.Add("========================");
+            finalOutputList.Add(String.Format("- Andy Owes Vince:  ${0}", amountAOwesV));
+            finalOutputList.Add(String.Format("- Mike Owes Vince:  ${0}", amountMOwesV));
+
+            finalOutputList.Add(Environment.NewLine);
+            finalOutputList.Add("Amounts Owed To Mike:");
+            finalOutputList.Add("========================");
+            finalOutputList.Add(String.Format("- Andy Owes Mike:  ${0}", amountAOwesM));
+            finalOutputList.Add(String.Format("- Vince Owes Mike:  ${0}", amountVOwesM));
+
+            Console.WriteLine("These receipts & totals have been recorded at the following directory: C:/TestFolder/ReceiptTotals.txt");
+            Console.Write("Would you like to see the final output for 'ReceiptTotals.txt'? (y/n): ");
+            string reviewOutput = Console.ReadLine().ToUpper();
+
+            if (reviewOutput == "Y") {
+                foreach (string textLine in finalOutputList) {
+                    Console.WriteLine(textLine);
+                }
+            }
+            // Finally, we record everything to ReceiptTotals.txt...
+            System.IO.File.WriteAllLines(@"C:\TestFolder\ReceiptTotals.txt", finalOutputList);
         }
     }
 }

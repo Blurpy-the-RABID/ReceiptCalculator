@@ -88,10 +88,41 @@ namespace ReceiptCalculator {
                 Console.WriteLine("\nReceipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber());
                 Console.WriteLine("--------------");
                 Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
-                Console.WriteLine("Additional Amount Owed By Andy = {0}", receipt.returnATotal());
-                Console.WriteLine("Additional Amount Owed By Vince = {0}", receipt.returnVTotal());
-                Console.WriteLine("Additional Amount Owed By Mike = {0}", receipt.returnMTotal());                
+                if (receipt.returnATotal() != 0) {
+                    Console.WriteLine("Additional Amount Owed By Andy = {0}", receipt.returnATotal());
+                }
+                if (receipt.returnVTotal() != 0) {
+                    Console.WriteLine("Additional Amount Owed By Vince = {0}", receipt.returnVTotal());
+                }
+                if (receipt.returnMTotal() != 0) {
+                    Console.WriteLine("Additional Amount Owed By Mike = {0}", receipt.returnMTotal());
+                }
             }
         }
+
+        public List<string> writeAllReceiptsToFile() {
+            List<string> receiptListOutput = new List<string>();
+            receiptListOutput.Add(Environment.NewLine);
+            receiptListOutput.Add(String.Format("The following are the receipts contained within the {0} List:", listOwner));
+            receiptListOutput.Add("==============================================================");
+
+                foreach (Receipt receipt in receiptList) {
+                    receiptListOutput.Add(Environment.NewLine);
+                    receiptListOutput.Add(String.Format("Receipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber()));
+                    receiptListOutput.Add("--------------");
+                    receiptListOutput.Add(String.Format("Communal Total = {0}", receipt.returnCommunalTotal()));
+                    if (receipt.returnATotal() != 0) {
+                        receiptListOutput.Add(String.Format("Additional Amount Owed By Andy = {0}", receipt.returnATotal()));
+                    }
+                    if (receipt.returnVTotal() != 0) {
+                        receiptListOutput.Add(String.Format("Additional Amount Owed By Vince = {0}", receipt.returnVTotal()));
+                    }
+                    if (receipt.returnMTotal() != 0) {
+                        receiptListOutput.Add(String.Format("Additional Amount Owed By Mike = {0}", receipt.returnMTotal()));
+                    }
+                }
+            return receiptListOutput;
+        }
+
     }
 }
