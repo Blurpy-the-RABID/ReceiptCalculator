@@ -147,7 +147,7 @@ namespace ReceiptCalculator {
                 switch (receiptOwner) {
                     case "A":
                         foreach (Receipt receipt in aReceiptList) {
-                            listCommunalTotal = receipt.returnCommunalTotal();
+                            listCommunalTotal += receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();
@@ -155,7 +155,7 @@ namespace ReceiptCalculator {
                         break;
                     case "V":
                         foreach (Receipt receipt in vReceiptList) {
-                            listCommunalTotal = receipt.returnCommunalTotal();
+                            listCommunalTotal += receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();
@@ -163,7 +163,7 @@ namespace ReceiptCalculator {
                         break;
                     case "M":
                         foreach (Receipt receipt in mReceiptList) {
-                            listCommunalTotal = receipt.returnCommunalTotal();
+                            listCommunalTotal += receipt.returnCommunalTotal();
                             aListTotal += receipt.returnATotal();
                             vListTotal += receipt.returnVTotal();
                             mListTotal += receipt.returnMTotal();

@@ -45,7 +45,7 @@ namespace ReceiptCalculator {
 
             // Now that we have all of the receipts in this List instance, we'll calculate all of the Totals.
             foreach (Receipt receipt in receiptList) {
-                listCommunalTotal = receipt.returnCommunalTotal();
+                listCommunalTotal += receipt.returnCommunalTotal();
                 aListTotal += receipt.returnATotal();
                 vListTotal += receipt.returnVTotal();
                 mListTotal += receipt.returnMTotal();
