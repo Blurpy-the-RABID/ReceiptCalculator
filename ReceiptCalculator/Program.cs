@@ -26,42 +26,55 @@ namespace ReceiptCalculator {
             while (aList.returnIsListComplete() == false || vList.returnIsListComplete() == false || mList.returnIsListComplete() == false) {
                 Console.Write("\nWhose receipts will you be entering?  Enter the person's first initial ([A]ndy, [V]ince, [M]ike): ");
                 receiptOwner = Console.ReadLine().ToUpper();
+                bool loopInput = true;
 
-                while (receiptOwner == "A") {
-                    if (aList.returnIsListComplete() == true) {
-                        Console.Write("You've already entered all of Andrew's receipts.  Please enter either 'V' for Vince, or 'M' for Mike: ");
-                        receiptOwner = Console.ReadLine().ToUpper();
+                // Here's a while loop that I've come up with to keep the user from entering invalid input.  If the user types in something other than "A", "V", or "M", the program
+                // will tell the user that their input is invalid, and it will ask them once again whose receipts will they be entering.
+                while (loopInput == true) {
+                    if (receiptOwner == "A" || receiptOwner == "V" || receiptOwner == "M") {
+                        loopInput = false; // Since the user typed in valid input (A/V/M), we no longer need to repeat this while loop.  So first thing we do is set loopInput to "false".
+
+                        while (receiptOwner == "A") {
+                            if (aList.returnIsListComplete() == true) {
+                                Console.Write("You've already entered all of Andrew's receipts.  Please enter either 'V' for Vince, or 'M' for Mike: ");
+                                receiptOwner = Console.ReadLine().ToUpper();
+                                loopInput = true;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+
+                        while (receiptOwner == "V") {
+                            if (vList.returnIsListComplete() == true) {
+                                Console.Write("You've already entered all of Vince's receipts.  Please enter either 'A' for Andy, or 'M' for Mike: ");
+                                receiptOwner = Console.ReadLine().ToUpper();
+                                loopInput = true;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        while (receiptOwner == "M") {
+                            if (mList.returnIsListComplete() == true) {
+                                Console.Write("You've already entered all of Mike's receipts.  Please enter either 'A' for Andy, or 'V' for Vince: ");
+                                receiptOwner = Console.ReadLine().ToUpper();
+                                loopInput = true;
+                            }
+                            else {
+                                break;
+                            }
+                        }
                     }
-                    else {
-                        break;
+                        // Here's where we deal with invalid input that the user gives us.
+                    else if (receiptOwner != "A" || receiptOwner != "V" || receiptOwner != "M") {
+                        Console.WriteLine("Invalid user input: {0}.  Please enter 'A' for Andy, 'V' for Vince, or 'M' for Mike.", receiptOwner);
+                        Console.Write("\nWhose receipts will you be entering?  Enter the person's first initial ([A]ndy, [V]ince, [M]ike): ");
+                        receiptOwner = Console.ReadLine().ToUpper();
+                        loopInput = true;
                     }
                 }
-                    
-                while (receiptOwner == "V") {
-                    if (vList.returnIsListComplete() == true) {
-                        Console.Write("You've already entered all of Vince's receipts.  Please enter either 'A' for Andy, or 'M' for Mike: ");
-                        receiptOwner = Console.ReadLine().ToUpper();
-                    }
-                    else {
-                        break;
-                    }
-                }
-                while (receiptOwner == "M") {
-                    if (mList.returnIsListComplete() == true) {
-                        Console.Write("You've already entered all of Mike's receipts.  Please enter either 'A' for Andy, or 'V' for Vince: ");
-                        receiptOwner = Console.ReadLine().ToUpper();
-                    }
-                    else {
-                        break;
-                    }
-                }
-                         
-/*
-                        Console.Write("Error: Unacceptable user input.  Please enter 'A' for Andy, 'V' for Vince, or 'M' for Mike: ");
-                        receiptOwner = Console.ReadLine().ToUpper();
-                        break;
-                }
-*/
+
                 addAnotherReceipt = "Y";
                 // As long as the user answers "Y" to the last question in this for loop (i.e. to add another receipt to this List), this loop will create a new receipt and push it onto
                 // the current Owner's List.
@@ -117,8 +130,6 @@ namespace ReceiptCalculator {
                         Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
                         Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
                     }
-                    // Console.Write("Is this information for Receipt {0}{1} correct? (y/n): ", receiptOwner, i);
-                    // moveOn = Console.ReadLine().ToUpper();
 
                     // Now that the user is satisfied with this receipt's information, we'll add this receipt to the current Receipt Owner's List.
                     switch (receiptOwner) {
@@ -170,7 +181,6 @@ namespace ReceiptCalculator {
                         }
                         break;
                 }
-                
 
                 Console.WriteLine("\nTotals For {0} Receipt List:", receiptOwner);
                 Console.WriteLine("Communal Total For {0} Receipt List = {1}", receiptOwner, listCommunalTotal);
@@ -198,7 +208,7 @@ namespace ReceiptCalculator {
                         break;
                 }
             }
-            // Now that we've completed all three Receipt Lists, we'll give the user the opportunity to review them before moving on.
+            // Now that we've completed all three Receipt Lists, we'll give the user the opportunity to review & edit them before moving on.
             Console.Write("All (3) Receipt Lists are completed.  Would you like to review them now before moving on? (y/n): ");
             string reviewReceipts = Console.ReadLine().ToUpper();
             if (reviewReceipts == "Y") {
@@ -210,6 +220,32 @@ namespace ReceiptCalculator {
                     switch (receiptListToReview) {
                         case "A":
                             aList.showAllReceipts();
+                           /* Below is some code I started typing up to allow the user to edit receipts.  I'm going to implement a new class to handle these processes, as this is
+                            * becoming a little too cluttered here in Program.cs.
+                            * 
+                                                        Console.Write("Would you like to edit any of these receipts? (y/n): ");
+                                                        editReceipt = Console.ReadLine().ToUpper();
+                                                        string editReceipt = "N";
+
+                                                        if (editReceipt == "Y") {
+                                                            Console.Write("Enter the number of the 'A' receipt you wish to edit (ex. 'A3'): A");
+                                                            int receiptNumber = Convert.ToInt32(Console.ReadLine());
+
+                                                            // To ensure everything is in sync, we'll first clear out the receipts in aReceiptList.
+                                                            // We'll then insert the receipt list saved within aList into aReceiptList.
+                                                            aReceiptList.RemoveRange(0, aReceiptList.Count);
+                                                            ArrayList savedList = aList.returnList();
+                                                            for (int i = 0; i < savedList.Count; i++) {
+                                                                aReceiptList.Add(savedList[i]);
+                                                            }
+                                
+                                                            // Next, we'll check to see if the user gave invalid input.  If so, then we ask them to re-enter the data for that receipt.
+                                                            // If the receipt they specify doesn't exist, then we specify this and move on to the next question.
+                                                            if (receiptNumber <= aReceiptList.Count) {
+                                    
+                                                            }
+                            */
+
                             Console.Write("Would you like to review another list? (y/n): ");
                             reviewReceipts = Console.ReadLine().ToUpper();
                             if (reviewReceipts == "Y") {

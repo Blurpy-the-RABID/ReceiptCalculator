@@ -76,6 +76,10 @@ namespace ReceiptCalculator {
             return listOwner;
         }
 
+        public ArrayList returnList() {
+            return receiptList;
+        }
+
         public bool returnIsListComplete() {
             return isListComplete;
         }
