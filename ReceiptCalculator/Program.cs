@@ -11,11 +11,8 @@ namespace ReceiptCalculator {
             List vList = new List(); // This will store all of Vince's receipts.
             List mList = new List(); // This will store all of Mike's receipts.
             string addAnotherReceipt = "Y"; // This will control the for loop that adds additional receipts to this Receipt List.
-            // string moveOn = "Y"; // This will control whether or not the user wishes to re-enter a receipt.
-            string receiptOwner = "X";
-            ArrayList aReceiptList = new ArrayList(); // This ArrayList will hold Andy's receipts.
-            ArrayList vReceiptList = new ArrayList(); // This ArrayList will hold Vince's receipts.
-            ArrayList mReceiptList = new ArrayList(); // This ArrayList will hold Mike's receipts.
+            string receiptOwner = "X"; // This will store the first initial of this List's owner's name.
+            Interface interFace = new Interface();
 
             Console.WriteLine("Welcome to the Receipt Calculator Program, written by Vincent Fantini.");
             Console.WriteLine("This calculator assumes that there are only (3) people who've submitted receipts:  Vince; Mike; and Andy.");
@@ -79,68 +76,18 @@ namespace ReceiptCalculator {
                 // As long as the user answers "Y" to the last question in this for loop (i.e. to add another receipt to this List), this loop will create a new receipt and push it onto
                 // the current Owner's List.
                 for (int i = 1; addAnotherReceipt == "Y"; i++) {
-                    Receipt receipt = new Receipt(receiptOwner, i);
-                    Console.WriteLine("\nReceipt {0}{1}:", receiptOwner, i);
-                    Console.Write("Enter Receipt {0}{1}'s Communal Total: ", receiptOwner, i);
-                    double communalTotal = Convert.ToDouble(Console.ReadLine());
-                    receipt.getCommunalTotal(communalTotal);
-
-                    Console.Write("\nAre there any individual items that are not communal? (y/n): ");
-                    string answer = Console.ReadLine().ToUpper();
-
-                    if (answer == "Y") {
-                        Console.WriteLine("Enter the first initial of the persons to whom the item(s) was bought for (A / V / M).");
-                        Console.Write("If multiple persons have items on this Receipt, separate their initials with a space: ");
-                        string indivItemOwner = Console.ReadLine().ToUpper();
-                        string[] initials = indivItemOwner.Split(' ');
-
-                        for (int j = 0; j < initials.Length; j++) {
-                            indivItemOwner = initials[j];
-                            switch (initials[j]) {
-                                case "A":
-                                    Console.Write("\nEnter the total amount (including tax) that Andy owes for his items on Receipt {0}{1}: ", receiptOwner, i);
-                                    receipt.getIndivTotal(indivItemOwner, Convert.ToDouble(Console.ReadLine()));
-                                    break;
-                                case "V":
-                                    Console.Write("\nEnter the total amount (including tax) that Vinny owes for his items on Receipt {0}{1}: ", receiptOwner, i);
-                                    receipt.getIndivTotal(indivItemOwner, Convert.ToDouble(Console.ReadLine()));
-                                    break;
-                                case "M":
-                                    Console.Write("\nEnter the total amount (including tax) that Mike owes for his items on Receipt {0}{1}: ", receiptOwner, i);
-                                    receipt.getIndivTotal(indivItemOwner, Convert.ToDouble(Console.ReadLine()));
-                                    break;
-                                default:
-                                    Console.WriteLine("Error: Unrecognized first initial.");
-                                    break;
-                            }
-                        }
-                    }
-                    // Now we display all of the data entered for the current receipt.
-                    Console.WriteLine("\nReceipt {0}{1}:", receiptOwner, i);
-                    Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
-                    if (receiptOwner == "A") {
-                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
-                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.returnMTotal());
-                    }
-                    else if (receiptOwner == "V") {
-                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
-                        Console.WriteLine("Additional Amount Owed By Mike: {0}", receipt.returnMTotal());
-                    }
-                    else if (receiptOwner == "M") {
-                        Console.WriteLine("Additional Amount Owed By Andy: {0}", receipt.returnATotal());
-                        Console.WriteLine("Additional Amount Owed By Vince: {0}", receipt.returnVTotal());
-                    }
+                    Receipt receipt = interFace.getReceiptEntry(receiptOwner, i);
 
                     // Now that the user is satisfied with this receipt's information, we'll add this receipt to the current Receipt Owner's List.
                     switch (receiptOwner) {
                         case "A":
-                            aReceiptList.Add(receipt);
+                            aList.addReceiptToList(receipt);
                             break;
                         case "V":
-                            vReceiptList.Add(receipt);
+                            vList.addReceiptToList(receipt);
                             break;
                         case "M":
-                            mReceiptList.Add(receipt);
+                            mList.addReceiptToList(receipt);
                             break;
                     }
 
@@ -149,102 +96,50 @@ namespace ReceiptCalculator {
                     addAnotherReceipt = Console.ReadLine().ToUpper();
                 }
 
-                // So now we're done entering receipts for the current Owner's List.  Let's display the results of all of the totals on this List...
-                double listCommunalTotal = 0;
-                double aListTotal = 0;
-                double vListTotal = 0;
-                double mListTotal = 0;
-
-                switch (receiptOwner) {
-                    case "A":
-                        foreach (Receipt receipt in aReceiptList) {
-                            listCommunalTotal += receipt.returnCommunalTotal();
-                            aListTotal += receipt.returnATotal();
-                            vListTotal += receipt.returnVTotal();
-                            mListTotal += receipt.returnMTotal();
-                        }
-                        break;
-                    case "V":
-                        foreach (Receipt receipt in vReceiptList) {
-                            listCommunalTotal += receipt.returnCommunalTotal();
-                            aListTotal += receipt.returnATotal();
-                            vListTotal += receipt.returnVTotal();
-                            mListTotal += receipt.returnMTotal();
-                        }
-                        break;
-                    case "M":
-                        foreach (Receipt receipt in mReceiptList) {
-                            listCommunalTotal += receipt.returnCommunalTotal();
-                            aListTotal += receipt.returnATotal();
-                            vListTotal += receipt.returnVTotal();
-                            mListTotal += receipt.returnMTotal();
-                        }
-                        break;
-                }
-
-                Console.WriteLine("\nTotals For {0} Receipt List:", receiptOwner);
-                Console.WriteLine("Communal Total For {0} Receipt List = {1}", receiptOwner, listCommunalTotal);
-                Console.WriteLine("Amount Owed Per Person For Communal Total = {0}", listCommunalTotal / 3);
-                Console.WriteLine("Additional Amount Owed By Andy To {0} = {1}", receiptOwner, aListTotal);
-                Console.WriteLine("Additional Amount Owed By Vince To {0} = {1}", receiptOwner, vListTotal);
-                Console.WriteLine("Additional Amount Owed By Mike To {0} = {1}", receiptOwner, mListTotal);
-
-                // The last thing we do is set the corresponding ListComplete boolean variable to true.  Once all three are set to "true," then we move onto the next phase of calculations. 
+                // The last thing we do for each List is set the corresponding ListComplete boolean variable to true, set this List's Owner, and calculate the final totals for this List.
+                // Once all three ListComplete booleans are set to "true," we will move onto displaying the lists and writing the results to a file.
                 switch (receiptOwner) {
                     case "A":
                         aList.setIsListComplete(true);
                         aList.getListOwner(receiptOwner);
-                        aList.getReceiptList(aReceiptList);
+                        aList.calculateTotals();
                         break;
                     case "V":
                         vList.setIsListComplete(true);
                         vList.getListOwner(receiptOwner);
-                        vList.getReceiptList(vReceiptList);
+                        vList.calculateTotals();
                         break;
                     case "M":
                         mList.setIsListComplete(true);
                         mList.getListOwner(receiptOwner);
-                        mList.getReceiptList(mReceiptList);
+                        mList.calculateTotals();
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Receipt Owner Initial.  Cannot calculate receipt list totals.");
                         break;
                 }
             }
             // Now that we've completed all three Receipt Lists, we'll give the user the opportunity to review & edit them before moving on.
-            Console.Write("All (3) Receipt Lists are completed.  Would you like to review them now before moving on? (y/n): ");
+            Console.Write("All (3) Receipt Lists are completed.  Would you like to review & edit them now before moving on? (y/n): ");
             string reviewReceipts = Console.ReadLine().ToUpper();
             if (reviewReceipts == "Y") {
                 bool reviewAgain = true;
                 while (reviewAgain == true) {
                     Console.Write("\nPlease specify whose Receipt List you wish to review (A/V/M): ");
                     string receiptListToReview = Console.ReadLine().ToUpper();
+                    string editReceipt = "N";
 
                     switch (receiptListToReview) {
                         case "A":
                             aList.showAllReceipts();
-                           /* Below is some code I started typing up to allow the user to edit receipts.  I'm going to implement a new class to handle these processes, as this is
-                            * becoming a little too cluttered here in Program.cs.
-                            * 
-                                                        Console.Write("Would you like to edit any of these receipts? (y/n): ");
-                                                        editReceipt = Console.ReadLine().ToUpper();
-                                                        string editReceipt = "N";
+                            Console.Write("Would you like to edit any of these receipts? (y/n): ");
+                            editReceipt = Console.ReadLine().ToUpper();
 
-                                                        if (editReceipt == "Y") {
-                                                            Console.Write("Enter the number of the 'A' receipt you wish to edit (ex. 'A3'): A");
-                                                            int receiptNumber = Convert.ToInt32(Console.ReadLine());
-
-                                                            // To ensure everything is in sync, we'll first clear out the receipts in aReceiptList.
-                                                            // We'll then insert the receipt list saved within aList into aReceiptList.
-                                                            aReceiptList.RemoveRange(0, aReceiptList.Count);
-                                                            ArrayList savedList = aList.returnList();
-                                                            for (int i = 0; i < savedList.Count; i++) {
-                                                                aReceiptList.Add(savedList[i]);
-                                                            }
-                                
-                                                            // Next, we'll check to see if the user gave invalid input.  If so, then we ask them to re-enter the data for that receipt.
-                                                            // If the receipt they specify doesn't exist, then we specify this and move on to the next question.
-                                                            if (receiptNumber <= aReceiptList.Count) {
-                                    
-                                                            }
-                            */
+                            if (editReceipt == "Y") {
+                                Console.Write("Enter the number of the 'A' receipt you wish to edit (ex. 'A3'): A");
+                                int receiptNumber = Convert.ToInt32(Console.ReadLine());
+                                interFace.editReceiptEntry(aList, receiptNumber);
+                            }
 
                             Console.Write("Would you like to review another list? (y/n): ");
                             reviewReceipts = Console.ReadLine().ToUpper();
@@ -257,6 +152,16 @@ namespace ReceiptCalculator {
                             break;
                         case "V":
                             vList.showAllReceipts();
+
+                            Console.Write("Would you like to edit any of these receipts? (y/n): ");
+                            editReceipt = Console.ReadLine().ToUpper();
+
+                            if (editReceipt == "Y") {
+                                Console.Write("Enter the number of the 'V' receipt you wish to edit (ex. 'V3'): V");
+                                int receiptNumber = Convert.ToInt32(Console.ReadLine());
+                                interFace.editReceiptEntry(vList, receiptNumber);
+                            }
+
                             Console.Write("Would you like to review another list? (y/n): ");
                             reviewReceipts = Console.ReadLine().ToUpper();
                             if (reviewReceipts == "Y") {
@@ -268,6 +173,16 @@ namespace ReceiptCalculator {
                             break;
                         case "M":
                             mList.showAllReceipts();
+
+                            Console.Write("Would you like to edit any of these receipts? (y/n): ");
+                            editReceipt = Console.ReadLine().ToUpper();
+
+                            if (editReceipt == "Y") {
+                                Console.Write("Enter the number of the 'M' receipt you wish to edit (ex. 'M3'): M");
+                                int receiptNumber = Convert.ToInt32(Console.ReadLine());
+                                interFace.editReceiptEntry(mList, receiptNumber);
+                            }
+
                             Console.Write("Would you like to review another list? (y/n): ");
                             reviewReceipts = Console.ReadLine().ToUpper();
                             if (reviewReceipts == "Y") {
@@ -364,8 +279,33 @@ namespace ReceiptCalculator {
             Console.WriteLine("\n\nCreating output for 'ReceiptTotals.txt'...");
             List<string> finalOutputList = new List<string>();
             finalOutputList.AddRange(aList.writeAllReceiptsToFile());
+            finalOutputList.Add(Environment.NewLine);
+            finalOutputList.Add(String.Format("Final Totals For All Receipts On {0} List:", aList.returnListOwner()));
+            finalOutputList.Add("----------------------------------");
+            finalOutputList.Add(String.Format("Communal Total Of ALL Receipts On {0} List = {1}", aList.returnListOwner(), aList.returnCommunalTotal()));
+            finalOutputList.Add(String.Format("Communal Total Owed Per Person Of ALL Receipts On {0} List = {1}", aList.returnListOwner(), aList.returnCommunalTotalPerPerson()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Andy On {0} List = {1}", aList.returnListOwner(), aList.returnAListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Vince On {0} List = {1}", aList.returnListOwner(), aList.returnVListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Mike On {0} List = {1}", aList.returnListOwner(), aList.returnMListTotal()));
+
             finalOutputList.AddRange(vList.writeAllReceiptsToFile());
+            finalOutputList.Add(String.Format("Final Totals For All Receipts On {0} List:", vList.returnListOwner()));
+            finalOutputList.Add("----------------------------------");
+            finalOutputList.Add(String.Format("Communal Total Of ALL Receipts On {0} List = {1}", vList.returnListOwner(), vList.returnCommunalTotal()));
+            finalOutputList.Add(String.Format("Communal Total Owed Per Person Of ALL Receipts On {0} List = {1}", vList.returnListOwner(), vList.returnCommunalTotalPerPerson()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Andy On {0} List = {1}", vList.returnListOwner(), vList.returnAListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Vince On {0} List = {1}", vList.returnListOwner(), vList.returnVListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Mike On {0} List = {1}", vList.returnListOwner(), vList.returnMListTotal()));
+
             finalOutputList.AddRange(mList.writeAllReceiptsToFile());
+            finalOutputList.Add(String.Format("Final Totals For All Receipts On {0} List:", mList.returnListOwner()));
+            finalOutputList.Add("----------------------------------");
+            finalOutputList.Add(String.Format("Communal Total Of ALL Receipts On {0} List = {1}", mList.returnListOwner(), mList.returnCommunalTotal()));
+            finalOutputList.Add(String.Format("Communal Total Owed Per Person Of ALL Receipts On {0} List = {1}", mList.returnListOwner(), mList.returnCommunalTotalPerPerson()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Andy On {0} List = {1}", mList.returnListOwner(), mList.returnAListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Vince On {0} List = {1}", mList.returnListOwner(), mList.returnVListTotal()));
+            finalOutputList.Add(String.Format("Additional Total Amount Owed By Mike On {0} List = {1}", mList.returnListOwner(), mList.returnMListTotal()));
+
             finalOutputList.Add(Environment.NewLine);
             finalOutputList.Add("Calculations Complete!!!");
             finalOutputList.Add("Below are the totals owed by each person to each person.");

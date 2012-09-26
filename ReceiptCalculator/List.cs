@@ -8,48 +8,37 @@ namespace ReceiptCalculator {
     class List {
         string listOwner;
         ArrayList receiptList = new ArrayList();
-        double listCommunalTotal = 0;
-        double aListTotal = 0;
-        double vListTotal = 0;
-        double mListTotal = 0;
+        double listCommunalTotal = 0.00;
+        double communalTotalPerPerson = 0.00;
+        double aListTotal = 0.00;
+        double vListTotal = 0.00;
+        double mListTotal = 0.00;
         bool isListComplete = false; // This will be switched to 'true' once we're done creating this person's list of receipts.
 
         public List() {
         }
 
-        public List(string ownerInitial, ArrayList finishedList) {
-            listOwner = ownerInitial;
-
-            // Now to copy the ArrayList of receipts into this List's ArrayList...
-            for (int i = 0; i < finishedList.Count; i++) {
-                receiptList.Add(finishedList[i]);
-            }
-
-            // Now that we have all of the receipts in this List instance, we'll calculate all of the Totals.
-            foreach (Receipt receipt in receiptList) {
-                listCommunalTotal = receipt.returnCommunalTotal();
-                aListTotal += receipt.returnATotal();
-                vListTotal += receipt.returnVTotal();
-                mListTotal += receipt.returnMTotal();
-            }
-        }
-
-        public void getListOwner(string ownerInitial) {
-            listOwner = ownerInitial;
-        }
-
-        public void getReceiptList(ArrayList finishedList) {
-            for (int i = 0; i < finishedList.Count; i++) {
-                receiptList.Add(finishedList[i]);
-            }
-
-            // Now that we have all of the receipts in this List instance, we'll calculate all of the Totals.
+        public void calculateTotals() {
             foreach (Receipt receipt in receiptList) {
                 listCommunalTotal += receipt.returnCommunalTotal();
                 aListTotal += receipt.returnATotal();
                 vListTotal += receipt.returnVTotal();
                 mListTotal += receipt.returnMTotal();
             }
+            Console.WriteLine("\nTotals For {0} Receipt List:", listOwner);
+            Console.WriteLine("Communal Total For {0} Receipt List = {1}", listOwner, listCommunalTotal);
+            Console.WriteLine("Amount Owed Per Person For Communal Total = {0}", this.returnCommunalTotalPerPerson());
+            Console.WriteLine("Additional Amount Owed By Andy To {0} = {1}", listOwner, aListTotal);
+            Console.WriteLine("Additional Amount Owed By Vince To {0} = {1}", listOwner, vListTotal);
+            Console.WriteLine("Additional Amount Owed By Mike To {0} = {1}", listOwner, mListTotal);
+        }
+
+        public void getListOwner(string ownerInitial) {
+            listOwner = ownerInitial;
+        }
+
+        public void addReceiptToList(Receipt receipt) {
+            receiptList.Add(receipt);
         }
 
         public void setIsListComplete(bool listStatus) {
@@ -58,6 +47,11 @@ namespace ReceiptCalculator {
 
         public double returnCommunalTotal() {
             return listCommunalTotal;
+        }
+
+        public double returnCommunalTotalPerPerson() {
+            communalTotalPerPerson = listCommunalTotal / 3;
+            return communalTotalPerPerson;
         }
 
         public double returnAListTotal() {
@@ -84,6 +78,26 @@ namespace ReceiptCalculator {
             return isListComplete;
         }
 
+        public void editReceipt(Receipt newReceipt, int receiptNumber) {
+            receiptList.RemoveAt(receiptNumber - 1);
+            receiptList.Insert(receiptNumber - 1, newReceipt);
+            Receipt receipt = (Receipt)receiptList[receiptNumber - 1];
+            Console.WriteLine("Receipt {0}{1} has been edited.  The following are the new totals for Receipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber());
+            Console.WriteLine("\nReceipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber());
+            Console.WriteLine("--------------");
+            Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
+            Console.WriteLine("Communal Total Per Person = {0}", receipt.returnCommunalTotal() / 3);
+            if (receipt.returnATotal() != 0) {
+                Console.WriteLine("Additional Amount Owed By Andy = {0}", receipt.returnATotal());
+            }
+            if (receipt.returnVTotal() != 0) {
+                Console.WriteLine("Additional Amount Owed By Vince = {0}", receipt.returnVTotal());
+            }
+            if (receipt.returnMTotal() != 0) {
+                Console.WriteLine("Additional Amount Owed By Mike = {0}", receipt.returnMTotal());
+            }
+        }
+
         public void showAllReceipts() {
             Console.WriteLine("\nThe following are the receipts contained within the {0} List:", listOwner);
             Console.WriteLine("==============================================================");
@@ -92,6 +106,7 @@ namespace ReceiptCalculator {
                 Console.WriteLine("\nReceipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber());
                 Console.WriteLine("--------------");
                 Console.WriteLine("Communal Total = {0}", receipt.returnCommunalTotal());
+                Console.WriteLine("Communal Total Per Person = {0}", receipt.returnCommunalTotal() / 3);
                 if (receipt.returnATotal() != 0) {
                     Console.WriteLine("Additional Amount Owed By Andy = {0}", receipt.returnATotal());
                 }
@@ -115,6 +130,7 @@ namespace ReceiptCalculator {
                     receiptListOutput.Add(String.Format("Receipt {0}{1}:", receipt.returnReceiptName(), receipt.returnReceiptNumber()));
                     receiptListOutput.Add("--------------");
                     receiptListOutput.Add(String.Format("Communal Total = {0}", receipt.returnCommunalTotal()));
+                    receiptListOutput.Add(String.Format("Communal Total Per Person = {0}", receipt.returnCommunalTotal() / 3));
                     if (receipt.returnATotal() != 0) {
                         receiptListOutput.Add(String.Format("Additional Amount Owed By Andy = {0}", receipt.returnATotal()));
                     }
@@ -127,6 +143,5 @@ namespace ReceiptCalculator {
                 }
             return receiptListOutput;
         }
-
     }
 }

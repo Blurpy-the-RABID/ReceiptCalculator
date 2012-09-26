@@ -51,12 +51,30 @@ namespace ReceiptCalculator {
             }
         }
 
-        public double returnVTotal() {
-            return vTotal;
+        // The following set of methods are for when the user wishes to edit an existing receipt.
+        public void changeCommunalTotal(double newCommunalTotal) {
+            communalTotal = newCommunalTotal;
         }
 
+        public void changeATotal(double newATotal) {
+            aTotal = newATotal;
+        }
+
+        public void changeVTotal(double newVTotal) {
+            vTotal = newVTotal;
+        }
+
+        public void changeMTotal(double newMTotal) {
+            mTotal = newMTotal;
+        }
+
+        // The following set of methods are for when we need to read the various totals written on an existing receipt.
         public double returnATotal() {
             return aTotal;
+        }
+
+        public double returnVTotal() {
+            return vTotal;
         }
 
         public double returnMTotal() {
